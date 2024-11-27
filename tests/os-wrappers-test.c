@@ -119,12 +119,16 @@ __attribute__ ((visibility("default"))) int
 
 	wrapped_calls_fcntl++;
 
+#ifdef F_DUPFD_CLOEXEC
 	if (fall_back && (cmd == F_DUPFD_CLOEXEC)) {
 		errno = EINVAL;
 		return -1;
 	}
+#endif
 	switch (cmd) {
+#ifdef F_DUPFD_CLOEXEC
 	case F_DUPFD_CLOEXEC:
+#endif
 	case F_DUPFD:
 	case F_SETFD:
 		va_start(ap, cmd);
