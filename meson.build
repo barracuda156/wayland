@@ -90,8 +90,8 @@ if get_option('libraries')
 	endif
 
 	decls = [
-		{ 'header': 'sys/signalfd.h', 'symbol': 'SFD_CLOEXEC' },
-		{ 'header': 'sys/timerfd.h', 'symbol': 'TFD_CLOEXEC' },
+		{ 'header': 'sys/signalfd.h', 'symbol': 'SFD_CLOEXEC', 'variable': 'HAVE_SIGNALFD' },
+		{ 'header': 'sys/timerfd.h', 'symbol': 'TFD_CLOEXEC', 'variable': 'HAVE_TIMERFD' },
 		{ 'header': 'time.h', 'symbol': 'CLOCK_MONOTONIC' },
 	]
 
@@ -100,6 +100,11 @@ if get_option('libraries')
 			error('@0@ is needed to compile Wayland libraries'.format(d['symbol']))
 		endif
 	endforeach
+
+	config_h.set(
+		'HAVE_ITIMERSPEC',
+		cc.has_members('struct itimerspec', 'it_interval', 'it_value', dependencies: epoll_dep)
+	)
 
 	if host_machine.system() == 'darwin'
 		rt_dep = []
